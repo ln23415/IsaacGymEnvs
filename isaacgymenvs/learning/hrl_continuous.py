@@ -62,7 +62,7 @@ class HRLAgent(common_agent.CommonAgent):
         
         super().__init__(base_name, config)
 
-        self._task_size = self.vec_env.env.get_task_obs_size()
+        self._task_size = self.vec_env.env_ptr.get_task_obs_size()
         
         self._llc_steps = config['llc_steps']
         llc_checkpoint = config['llc_checkpoint']

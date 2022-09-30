@@ -76,8 +76,8 @@ class FactoryEnvNutBolt(FactoryBase, FactoryABCEnv):
     def create_envs(self):
         """Set env options. Import assets. Create actors."""
 
-        lower = gymapi.Vec3(-self.cfg_base.env.env_spacing, -self.cfg_base.env.env_spacing, 0.0)
-        upper = gymapi.Vec3(self.cfg_base.env.env_spacing, self.cfg_base.env.env_spacing, self.cfg_base.env.env_spacing)
+        lower = gymapi.Vec3(-self.cfg_base.env_ptr.env_spacing, -self.cfg_base.env_ptr.env_spacing, 0.0)
+        upper = gymapi.Vec3(self.cfg_base.env_ptr.env_spacing, self.cfg_base.env_ptr.env_spacing, self.cfg_base.env_ptr.env_spacing)
         num_per_row = int(np.sqrt(self.num_envs))
 
         self.print_sdf_warning()
@@ -143,7 +143,7 @@ class FactoryEnvNutBolt(FactoryBase, FactoryABCEnv):
         """Set initial actor poses. Create actors. Set shape and DOF properties."""
 
         franka_pose = gymapi.Transform()
-        franka_pose.p.x = self.cfg_base.env.franka_depth
+        franka_pose.p.x = self.cfg_base.env_ptr.franka_depth
         franka_pose.p.y = 0.0
         franka_pose.p.z = 0.0
         franka_pose.r = gymapi.Quat(0.0, 0.0, 1.0, 0.0)
@@ -151,7 +151,7 @@ class FactoryEnvNutBolt(FactoryBase, FactoryABCEnv):
         table_pose = gymapi.Transform()
         table_pose.p.x = 0.0
         table_pose.p.y = 0.0
-        table_pose.p.z = self.cfg_base.env.table_height * 0.5
+        table_pose.p.z = self.cfg_base.env_ptr.table_height * 0.5
         table_pose.r = gymapi.Quat(0.0, 0.0, 0.0, 1.0)
 
         self.env_ptrs = []
@@ -192,7 +192,7 @@ class FactoryEnvNutBolt(FactoryBase, FactoryABCEnv):
             nut_pose = gymapi.Transform()
             nut_pose.p.x = 0.0
             nut_pose.p.y = self.cfg_env.env.nut_lateral_offset
-            nut_pose.p.z = self.cfg_base.env.table_height
+            nut_pose.p.z = self.cfg_base.env_ptr.table_height
             nut_pose.r = gymapi.Quat(0.0, 0.0, 0.0, 1.0)
             nut_handle = self.gym.create_actor(env_ptr, nut_assets[j], nut_pose, 'nut', i, 0, 0)
             self.nut_actor_ids_sim.append(actor_count)
@@ -206,7 +206,7 @@ class FactoryEnvNutBolt(FactoryBase, FactoryABCEnv):
             bolt_pose = gymapi.Transform()
             bolt_pose.p.x = 0.0
             bolt_pose.p.y = 0.0
-            bolt_pose.p.z = self.cfg_base.env.table_height
+            bolt_pose.p.z = self.cfg_base.env_ptr.table_height
             bolt_pose.r = gymapi.Quat(0.0, 0.0, 0.0, 1.0)
             bolt_handle = self.gym.create_actor(env_ptr, bolt_assets[j], bolt_pose, 'bolt', i, 0, 0)
             self.bolt_actor_ids_sim.append(actor_count)
@@ -236,7 +236,7 @@ class FactoryEnvNutBolt(FactoryBase, FactoryABCEnv):
 
             franka_shape_props = self.gym.get_actor_rigid_shape_properties(env_ptr, franka_handle)
             for shape_id in self.shape_ids:
-                franka_shape_props[shape_id].friction = self.cfg_base.env.franka_friction
+                franka_shape_props[shape_id].friction = self.cfg_base.env_ptr.franka_friction
                 franka_shape_props[shape_id].rolling_friction = 0.0  # default = 0.0
                 franka_shape_props[shape_id].torsion_friction = 0.0  # default = 0.0
                 franka_shape_props[shape_id].restitution = 0.0  # default = 0.0
@@ -263,7 +263,7 @@ class FactoryEnvNutBolt(FactoryBase, FactoryABCEnv):
             self.gym.set_actor_rigid_shape_properties(env_ptr, bolt_handle, bolt_shape_props)
 
             table_shape_props = self.gym.get_actor_rigid_shape_properties(env_ptr, table_handle)
-            table_shape_props[0].friction = self.cfg_base.env.table_friction
+            table_shape_props[0].friction = self.cfg_base.env_ptr.table_friction
             table_shape_props[0].rolling_friction = 0.0  # default = 0.0
             table_shape_props[0].torsion_friction = 0.0  # default = 0.0
             table_shape_props[0].restitution = 0.0  # default = 0.0

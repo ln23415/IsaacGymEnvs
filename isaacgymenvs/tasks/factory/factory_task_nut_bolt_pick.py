@@ -245,7 +245,7 @@ class FactoryTaskNutBoltPick(FactoryEnvNutBolt, FactoryABCTask):
         self.root_pos[env_ids, self.nut_actor_id_env, 1] = self.cfg_task.randomize.nut_pos_xy_initial[1] + nut_noise_xy[
             env_ids, 1]
         self.root_pos[
-            env_ids, self.nut_actor_id_env, 2] = self.cfg_base.env.table_height - self.bolt_head_heights.squeeze(-1)
+            env_ids, self.nut_actor_id_env, 2] = self.cfg_base.env_ptr.table_height - self.bolt_head_heights.squeeze(-1)
         self.root_quat[env_ids, self.nut_actor_id_env] = torch.tensor([0.0, 0.0, 0.0, 1.0], dtype=torch.float32,
                                                                       device=self.device).repeat(len(env_ids), 1)
 
@@ -260,7 +260,7 @@ class FactoryTaskNutBoltPick(FactoryEnvNutBolt, FactoryABCTask):
                                                             bolt_noise_xy[env_ids, 0]
         self.root_pos[env_ids, self.bolt_actor_id_env, 1] = self.cfg_task.randomize.bolt_pos_xy_initial[1] + \
                                                             bolt_noise_xy[env_ids, 1]
-        self.root_pos[env_ids, self.bolt_actor_id_env, 2] = self.cfg_base.env.table_height
+        self.root_pos[env_ids, self.bolt_actor_id_env, 2] = self.cfg_base.env_ptr.table_height
         self.root_quat[env_ids, self.bolt_actor_id_env] = torch.tensor([0.0, 0.0, 0.0, 1.0], dtype=torch.float32,
                                                                        device=self.device).repeat(len(env_ids), 1)
 
@@ -379,7 +379,7 @@ class FactoryTaskNutBoltPick(FactoryEnvNutBolt, FactoryABCTask):
         """Check if nut is above table by more than specified multiple times height of nut."""
 
         lift_success = torch.where(
-            self.nut_pos[:, 2] > self.cfg_base.env.table_height + self.nut_heights.squeeze(-1) * height_multiple,
+            self.nut_pos[:, 2] > self.cfg_base.env_ptr.table_height + self.nut_heights.squeeze(-1) * height_multiple,
             torch.ones((self.num_envs,), device=self.device),
             torch.zeros((self.num_envs,), device=self.device))
 
@@ -390,7 +390,7 @@ class FactoryTaskNutBoltPick(FactoryEnvNutBolt, FactoryABCTask):
 
         # Set target pos above table
         self.ctrl_target_fingertip_midpoint_pos = \
-            torch.tensor([0.0, 0.0, self.cfg_base.env.table_height], device=self.device) \
+            torch.tensor([0.0, 0.0, self.cfg_base.env_ptr.table_height], device=self.device) \
             + torch.tensor(self.cfg_task.randomize.fingertip_midpoint_pos_initial, device=self.device)
         self.ctrl_target_fingertip_midpoint_pos = self.ctrl_target_fingertip_midpoint_pos.unsqueeze(0).repeat(self.num_envs, 1)
 

@@ -171,9 +171,9 @@ class FactoryTaskInsertion(FactoryEnvInsertion, FactoryABCTask):
             self.root_pos[env_ids, self.plug_actor_id_env] = \
                 torch.cat(((torch.rand((self.num_envs, 1), device=self.device) * 2.0 - 1.0) * self.cfg_task.randomize.plug_noise_xy,
                            self.cfg_task.randomize.plug_bias_y + (torch.rand((self.num_envs, 1), device=self.device) * 2.0 - 1.0) * self.cfg_task.randomize.plug_noise_xy,
-                           torch.ones((self.num_envs, 1), device=self.device) * (self.cfg_base.env.table_height + self.cfg_task.randomize.plug_bias_z)), dim=1)
+                           torch.ones((self.num_envs, 1), device=self.device) * (self.cfg_base.env_ptr.table_height + self.cfg_task.randomize.plug_bias_z)), dim=1)
         elif self.cfg_task.randomize.initial_state == 'goal':
-            self.root_pos[env_ids, self.plug_actor_id_env] = torch.tensor([0.0, 0.0, self.cfg_base.env.table_height],
+            self.root_pos[env_ids, self.plug_actor_id_env] = torch.tensor([0.0, 0.0, self.cfg_base.env_ptr.table_height],
                                                                           device=self.device)
 
         self.root_linvel[env_ids, self.plug_actor_id_env] = 0.0

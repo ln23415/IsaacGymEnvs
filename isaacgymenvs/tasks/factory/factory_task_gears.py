@@ -170,24 +170,24 @@ class FactoryTaskGears(FactoryEnvGears, FactoryABCTask):
             self.root_pos[env_ids, self.gear_small_actor_id_env] = \
                 torch.cat(((torch.rand((self.num_envs, 1), device=self.device) * 2.0 - 1.0) * self.cfg_task.randomize.gears_noise_xy,
                            - self.cfg_task.randomize.gears_bias_y + (torch.rand((self.num_envs, 1), device=self.device) * 2.0 - 1.0) * self.cfg_task.randomize.gears_noise_xy,
-                           torch.ones((self.num_envs, 1), device=self.device) * (self.cfg_base.env.table_height + self.cfg_task.randomize.gears_bias_z)
+                           torch.ones((self.num_envs, 1), device=self.device) * (self.cfg_base.env_ptr.table_height + self.cfg_task.randomize.gears_bias_z)
                            ), dim=1)
             self.root_pos[env_ids, self.gear_medium_actor_id_env] = \
                 torch.cat(((torch.rand((self.num_envs, 1), device=self.device) * 2.0 - 1.0) * self.cfg_task.randomize.gears_noise_xy,
                            self.cfg_task.randomize.gears_bias_y + (torch.rand((self.num_envs, 1), device=self.device) * 2.0 - 1.0) * self.cfg_task.randomize.gears_noise_xy,
-                           torch.ones((self.num_envs, 1), device=self.device) * (self.cfg_base.env.table_height + self.cfg_task.randomize.gears_bias_z)
+                           torch.ones((self.num_envs, 1), device=self.device) * (self.cfg_base.env_ptr.table_height + self.cfg_task.randomize.gears_bias_z)
                            ), dim=1)
             self.root_pos[env_ids, self.gear_large_actor_id_env] = \
                 torch.cat(((torch.rand((self.num_envs, 1), device=self.device) * 2.0 - 1.0) * self.cfg_task.randomize.gears_noise_xy,
                            - self.cfg_task.randomize.gears_bias_y + (torch.rand((self.num_envs, 1), device=self.device) * 2.0 - 1.0) * self.cfg_task.randomize.gears_noise_xy,
-                           torch.ones((self.num_envs, 1), device=self.device) * (self.cfg_base.env.table_height + self.cfg_task.randomize.gears_bias_z)), dim=1)
+                           torch.ones((self.num_envs, 1), device=self.device) * (self.cfg_base.env_ptr.table_height + self.cfg_task.randomize.gears_bias_z)), dim=1)
         elif self.cfg_task.randomize.initial_state == 'goal':
             self.root_pos[env_ids, self.gear_small_actor_id_env] = torch.tensor(
-                [0.0, 0.0, self.cfg_base.env.table_height], device=self.device)
+                [0.0, 0.0, self.cfg_base.env_ptr.table_height], device=self.device)
             self.root_pos[env_ids, self.gear_medium_actor_id_env] = torch.tensor(
-                [0.0, 0.0, self.cfg_base.env.table_height], device=self.device)
+                [0.0, 0.0, self.cfg_base.env_ptr.table_height], device=self.device)
             self.root_pos[env_ids, self.gear_large_actor_id_env] = torch.tensor(
-                [0.0, 0.0, self.cfg_base.env.table_height], device=self.device)
+                [0.0, 0.0, self.cfg_base.env_ptr.table_height], device=self.device)
 
         self.root_linvel[env_ids, self.gear_small_actor_id_env] = 0.0
         self.root_angvel[env_ids, self.gear_small_actor_id_env] = 0.0

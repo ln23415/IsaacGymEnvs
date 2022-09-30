@@ -100,7 +100,7 @@ def launch_rlg_hydra(cfg: DictConfig):
         envs = isaacgymenvs.make(
             cfg.seed, 
             cfg.task_name, 
-            cfg.task.env.numEnvs, 
+            cfg.task.env_ptr.numEnvs,
             cfg.sim_device,
             cfg.rl_device,
             cfg.graphics_device_id,

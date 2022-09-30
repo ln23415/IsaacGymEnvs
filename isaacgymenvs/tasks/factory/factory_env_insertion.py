@@ -75,8 +75,8 @@ class FactoryEnvInsertion(FactoryBase, FactoryABCEnv):
     def create_envs(self):
         """Set env options. Import assets. Create actors."""
 
-        lower = gymapi.Vec3(-self.cfg_base.env.env_spacing, -self.cfg_base.env.env_spacing, 0.0)
-        upper = gymapi.Vec3(self.cfg_base.env.env_spacing, self.cfg_base.env.env_spacing, self.cfg_base.env.env_spacing)
+        lower = gymapi.Vec3(-self.cfg_base.env_ptr.env_spacing, -self.cfg_base.env_ptr.env_spacing, 0.0)
+        upper = gymapi.Vec3(self.cfg_base.env_ptr.env_spacing, self.cfg_base.env_ptr.env_spacing, self.cfg_base.env_ptr.env_spacing)
         num_per_row = int(np.sqrt(self.num_envs))
 
         self.print_sdf_warning()
@@ -142,7 +142,7 @@ class FactoryEnvInsertion(FactoryBase, FactoryABCEnv):
         """Set initial actor poses. Create actors. Set shape and DOF properties."""
 
         franka_pose = gymapi.Transform()
-        franka_pose.p.x = self.cfg_base.env.franka_depth
+        franka_pose.p.x = self.cfg_base.env_ptr.franka_depth
         franka_pose.p.y = 0.0
         franka_pose.p.z = 0.0
         franka_pose.r = gymapi.Quat(0.0, 0.0, 1.0, 0.0)
@@ -150,7 +150,7 @@ class FactoryEnvInsertion(FactoryBase, FactoryABCEnv):
         table_pose = gymapi.Transform()
         table_pose.p.x = 0.0
         table_pose.p.y = 0.0
-        table_pose.p.z = self.cfg_base.env.table_height * 0.5
+        table_pose.p.z = self.cfg_base.env_ptr.table_height * 0.5
         table_pose.r = gymapi.Quat(0.0, 0.0, 0.0, 1.0)
 
         self.env_ptrs = []
@@ -183,7 +183,7 @@ class FactoryEnvInsertion(FactoryBase, FactoryABCEnv):
             plug_pose = gymapi.Transform()
             plug_pose.p.x = 0.0
             plug_pose.p.y = self.cfg_env.env.plug_lateral_offset
-            plug_pose.p.z = self.cfg_base.env.table_height
+            plug_pose.p.z = self.cfg_base.env_ptr.table_height
             plug_pose.r = gymapi.Quat(0.0, 0.0, 0.0, 1.0)
             plug_handle = self.gym.create_actor(env_ptr, plug_assets[j], plug_pose, 'plug', i, 0, 0)
             self.plug_actor_ids_sim.append(actor_count)
@@ -192,7 +192,7 @@ class FactoryEnvInsertion(FactoryBase, FactoryABCEnv):
             socket_pose = gymapi.Transform()
             socket_pose.p.x = 0.0
             socket_pose.p.y = 0.0
-            socket_pose.p.z = self.cfg_base.env.table_height
+            socket_pose.p.z = self.cfg_base.env_ptr.table_height
             socket_pose.r = gymapi.Quat(0.0, 0.0, 0.0, 1.0)
             socket_handle = self.gym.create_actor(env_ptr, socket_assets[j], socket_pose, 'socket', i, 0, 0)
             self.socket_actor_ids_sim.append(actor_count)
@@ -212,7 +212,7 @@ class FactoryEnvInsertion(FactoryBase, FactoryABCEnv):
 
             franka_shape_props = self.gym.get_actor_rigid_shape_properties(env_ptr, franka_handle)
             for shape_id in self.shape_ids:
-                franka_shape_props[shape_id].friction = self.cfg_base.env.franka_friction
+                franka_shape_props[shape_id].friction = self.cfg_base.env_ptr.franka_friction
                 franka_shape_props[shape_id].rolling_friction = 0.0  # default = 0.0
                 franka_shape_props[shape_id].torsion_friction = 0.0  # default = 0.0
                 franka_shape_props[shape_id].restitution = 0.0  # default = 0.0
@@ -239,7 +239,7 @@ class FactoryEnvInsertion(FactoryBase, FactoryABCEnv):
             self.gym.set_actor_rigid_shape_properties(env_ptr, socket_handle, socket_shape_props)
 
             table_shape_props = self.gym.get_actor_rigid_shape_properties(env_ptr, table_handle)
-            table_shape_props[0].friction = self.cfg_base.env.table_friction
+            table_shape_props[0].friction = self.cfg_base.env_ptr.table_friction
             table_shape_props[0].rolling_friction = 0.0  # default = 0.0
             table_shape_props[0].torsion_friction = 0.0  # default = 0.0
             table_shape_props[0].restitution = 0.0  # default = 0.0

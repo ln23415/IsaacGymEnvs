@@ -105,6 +105,8 @@ class Env(ABC):
         self.act_space = spaces.Box(np.ones(self.num_actions) * -1., np.ones(self.num_actions) * 1.)
 
         self.clip_obs = config["env"].get("clipObservations", np.Inf)
+
+        # 用于在step()函数中clamp传入的action数值， action_tensor = torch.clamp(actions, -self.clip_actions, self.clip_actions)
         self.clip_actions = config["env"].get("clipActions", np.Inf)
 
     @abc.abstractmethod 
@@ -260,6 +262,8 @@ class VecTask(Env):
         """
 
         # allocate buffers
+        # self.num_envs 映射是self.num_environments，由创建Env时传入的配置cfg文件确定
+        # self.num_obs 映射是self.num_observations，由创建Env时传入的配置cfg文件确定
         self.obs_buf = torch.zeros(
             (self.num_envs, self.num_obs), device=self.device, dtype=torch.float)
         self.states_buf = torch.zeros(
@@ -325,20 +329,25 @@ class VecTask(Env):
             actions = self.dr_randomizations['actions']['noise_lambda'](actions)
 
         action_tensor = torch.clamp(actions, -self.clip_actions, self.clip_actions)
-        # apply actions
+
+        # Apply the actions to the environment (eg by setting torques, position targets).
+        # 由task自己的类去继承实现
         self.pre_physics_step(action_tensor)
 
         # step physics and render each frame
         for i in range(self.control_freq_inv):
             if self.force_render:
+                # 好像直接调用了openai gym的render函数？
                 self.render()
+            # Steps the simulation by one time-step of dt, in seconds, divided in n substeps
             self.gym.simulate(self.sim)
 
         # to fix!
         if self.device == 'cpu':
             self.gym.fetch_results(self.sim, True)
 
-        # compute observations, rewards, resets, ...
+        # Compute reward and observations, reset any environments that require it
+        # 由task自己的类去继承实现
         self.post_physics_step()
 
         # fill time out buffer: set to 1 if we reached the max episode length AND the reset buffer is 1. Timeout == 1 makes sense only if the reset buffer is 1.

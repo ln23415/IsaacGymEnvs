@@ -137,7 +137,7 @@ class AMPAgent(common_agent.CommonAgent):
             self.current_rewards = self.current_rewards * not_dones.unsqueeze(1)
             self.current_lengths = self.current_lengths * not_dones
         
-            if (self.vec_env.env.viewer and (n == (self.horizon_length - 1))):
+            if (self.vec_env.env_ptr.viewer and (n == (self.horizon_length - 1))):
                 self._amp_debug(infos)
 
         mb_fdones = self.experience_buffer.tensor_dict['dones'].float()
@@ -453,7 +453,7 @@ class AMPAgent(common_agent.CommonAgent):
         return agent_acc, demo_acc
 
     def _fetch_amp_obs_demo(self, num_samples):
-        amp_obs_demo = self.vec_env.env.fetch_amp_obs_demo(num_samples)
+        amp_obs_demo = self.vec_env.env_ptr.fetch_amp_obs_demo(num_samples)
         return amp_obs_demo
 
     def _build_amp_buffers(self):

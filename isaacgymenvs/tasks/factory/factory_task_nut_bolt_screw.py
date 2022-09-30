@@ -86,7 +86,7 @@ class FactoryTaskNutBoltScrew(FactoryEnvNutBolt, FactoryABCTask):
     def _acquire_task_tensors(self):
         """Acquire tensors."""
 
-        target_heights = self.cfg_base.env.table_height + self.bolt_head_heights + self.nut_heights * 0.5
+        target_heights = self.cfg_base.env_ptr.table_height + self.bolt_head_heights + self.nut_heights * 0.5
         self.target_pos = target_heights * torch.tensor([0.0, 0.0, 1.0], device=self.device).repeat((self.num_envs, 1))
 
     def _refresh_task_tensors(self):
@@ -206,7 +206,7 @@ class FactoryTaskNutBoltScrew(FactoryEnvNutBolt, FactoryABCTask):
         # shape of root_linvel = (num_envs, num_actors, 3)
         # shape of root_angvel = (num_envs, num_actors, 3)
 
-        nut_pos = self.cfg_base.env.table_height + self.bolt_shank_lengths[env_ids]
+        nut_pos = self.cfg_base.env_ptr.table_height + self.bolt_shank_lengths[env_ids]
         self.root_pos[env_ids, self.nut_actor_id_env] = \
             nut_pos * torch.tensor([0.0, 0.0, 1.0], device=self.device).repeat(len(env_ids), 1)
         
@@ -374,7 +374,7 @@ class FactoryTaskNutBoltScrew(FactoryEnvNutBolt, FactoryABCTask):
         # If nut has fallen (i.e., if nut XY pos has drifted from center of bolt and nut Z pos has drifted below top of bolt)
         self.is_fallen = torch.logical_and(
             torch.norm(self.nut_com_pos[:, 0:2], p=2, dim=-1) > self.bolt_widths.squeeze(-1) * 0.5,
-            self.nut_com_pos[:, 2] < self.cfg_base.env.table_height + self.bolt_head_heights.squeeze(
+            self.nut_com_pos[:, 2] < self.cfg_base.env_ptr.table_height + self.bolt_head_heights.squeeze(
                 -1) + self.bolt_shank_lengths.squeeze(-1) + self.nut_heights.squeeze(-1) * 0.5)
 
         curr_failures = torch.logical_or(curr_failures, self.is_expired)
