@@ -337,7 +337,6 @@ class VecTask(Env):
         # step physics and render each frame
         for i in range(self.control_freq_inv):
             if self.force_render:
-                # 好像直接调用了openai gym的render函数？
                 self.render()
             # Steps the simulation by one time-step of dt, in seconds, divided in n substeps
             self.gym.simulate(self.sim)

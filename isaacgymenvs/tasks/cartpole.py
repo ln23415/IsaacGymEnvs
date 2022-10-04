@@ -53,7 +53,7 @@ class Cartpole(VecTask):
         dof_state_tensor = self.gym.acquire_dof_state_tensor(self.sim)
         self.dof_state = gymtorch.wrap_tensor(dof_state_tensor)
 
-        # 分解tensor，所得每个env下所有dof的位置信息和速度信息，
+        # 分解tensor，所得所有env下所有dof的位置信息和速度信息，
         self.dof_pos = self.dof_state.view(self.num_envs, self.num_dof, 2)[..., 0]
         self.dof_vel = self.dof_state.view(self.num_envs, self.num_dof, 2)[..., 1]
 
@@ -177,7 +177,7 @@ class Cartpole(VecTask):
         if env_ids is None:
             env_ids = np.arange(self.num_envs)
 
-        # Updates DOF state buffer，获取最新的数据
+        # Updates DOF state buffer，获取最新的数据???
         self.gym.refresh_dof_state_tensor(self.sim)
 
         self.obs_buf[env_ids, 0] = self.dof_pos[env_ids, 0].squeeze()
@@ -213,10 +213,10 @@ class Cartpole(VecTask):
 
     def post_physics_step(self):
 
-        # self.progress_buf = torch.zeros(self.num_envs)
+        # 维度参考其初始化: self.progress_buf = torch.zeros(self.num_envs)
         self.progress_buf += 1
 
-        # self.reset_buf = torch.ones(self.num_envs)
+        # 维度参考其初始化: elf.reset_buf = torch.ones(self.num_envs)
         env_ids = self.reset_buf.nonzero(as_tuple=False).squeeze(-1)
 
         # 找到reset_buf中非0的env的id，reset这些env
@@ -240,6 +240,9 @@ def compute_cartpole_reward(pole_angle, pole_vel, cart_vel, cart_pos,
     reward = 1.0 - pole_angle * pole_angle - 0.01 * torch.abs(cart_vel) - 0.005 * torch.abs(pole_vel)
 
     # adjust reward for reset agents
+    # torch.ones_like(reward) 返回一个填充了1的张量，shape与input的shape相同
+    # 使用torch.where()函数，torch.abs(cart_pos) > reset_dist是一个condition，reward中所有满足这个condition的数的数值是torch.ones_like(reward) * -2.0，
+    # 否则是原始数值
     reward = torch.where(torch.abs(cart_pos) > reset_dist, torch.ones_like(reward) * -2.0, reward)
     reward = torch.where(torch.abs(pole_angle) > np.pi / 2, torch.ones_like(reward) * -2.0, reward)
 
